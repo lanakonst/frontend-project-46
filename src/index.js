@@ -20,29 +20,22 @@ const valToString = (value) => {
 };
 
 const compareFiles = (data1, data2) => {
-  const res = [];
   const keys = _.union(Object.keys(data1), Object.keys(data2)).sort();
 
-  for (const key of keys) {
+  const res = keys.map((key) => {
     const value1 = data1[key];
     const valAsString1 = valToString(value1);
     const value2 = data2[key];
     const valAsString2 = valToString(value2);
     if (Object.hasOwn(data1, key)) {
       if (Object.hasOwn(data2, key)) {
-        if (_.isEqual(value1, value2)) {
-          res.push(`  ${key}: ${valAsString1}`);
-        } else {
-          res.push(`- ${key}: ${valAsString1}`);
-          res.push(`+ ${key}: ${valAsString2}`);
-        }
-      } else {
-        res.push(`- ${key}: ${valAsString1}`);
+        if (_.isEqual(value1, value2)) return (`  ${key}: ${valAsString1}`);
+        return (`- ${key}: ${valAsString1} \n + ${key}: ${valAsString2}`);
       }
-    } else {
-      res.push(`+ ${key}: ${valAsString2}`);
+      return (`- ${key}: ${valAsString1}`);
     }
-  }
+    return (`+ ${key}: ${valAsString2}`);
+  });
   return res;
 };
 
