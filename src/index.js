@@ -43,14 +43,13 @@ const compareFiles = (data1, data2) => {
             res.push(`+ ${key}: ${valAsString2}`);
         }
     }
-    return(res.join('\n'));
+    return res;
 };
 
 const genDiff = (filepath1, filepath2) => {
     const content1 = readFile(getAbsolutePath(filepath1));
     const content2 = readFile(getAbsolutePath(filepath2));
-    console.log(getAbsolutePath(filepath1))
-    return compareFiles(content1, content2);
+    return compareFiles(content1, content2).join('\n');
 };
 
 
