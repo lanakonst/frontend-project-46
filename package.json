@@ -2,25 +2,26 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "info",
-  "main": "index.js",
+  "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "test": "test"
+    "test": "npx test"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lanakonst/frontend-project-46.git"
   },
-  "author": "",
+  "author": "Konst",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/lanakonst/frontend-project-46/issues"
   },
   "homepage": "https://github.com/lanakonst/frontend-project-46#readme",
   "dependencies": {
-    "commander": "^9.4.0"
+    "commander": "^9.4.0",
+    "lodash": "^4.17.21"
   },
   "bin": {
-      "gendiff": "bin/gendiff.js"
+    "gendiff": "bin/gendiff.js"
   }
 }
