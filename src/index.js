@@ -47,6 +47,7 @@ const compareFiles = (data1, data2) => {
 };
 
 const genDiff = (filepath1, filepath2) => {
+    if (_.last(filepath1.split('.')) !== 'json' || _.last(filepath2.split('.')[-1] !== 'json')) return;
     const content1 = readFile(getAbsolutePath(filepath1));
     const content2 = readFile(getAbsolutePath(filepath2));
     return compareFiles(content1, content2).join('\n');
