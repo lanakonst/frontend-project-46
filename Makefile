@@ -1,3 +1,5 @@
+intall:
+	npm ci
 lint: 
 	npx eslint .
 test:
