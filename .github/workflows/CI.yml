@@ -1,42 +1,28 @@
-name: CI
-on:
-  - push
 
-env:
-  CI: true
+
+name: CI
+
+
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      # Node versions list
-      matrix:
-        node-version: [18.2.0]
-
     steps:
-        # Check-out repository under GitHub workspace
-        # https://github.com/actions/checkout
-      - uses: actions/checkout@v2
-        # Step's name
-      - name: Use Node.js ${{ matrix.node-version }}
-        # Configures the node version used on GitHub-hosted runners
-        # https://github.com/actions/setup-node
-        uses: actions/setup-node@v2
-        # The Node.js version to configure
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          node-version: '14.x'
       - run: make install
       - run: make test
       - run: make lint
-      - name: Test & publish code coverage
-        # Publish code coverage on Code Climate
-        # https://github.com/paambaati/codeclimate-action
-        # uses: paambaati/codeclimate-action@v3
+      - name: code coverage
         uses: paambaati/codeclimate-action@v3.0.0
-        # Add Code Climate secret key
         env:
-          CC_TEST_REPORTER_ID : ${{ secrets.CC_TEST_REPORTER_ID }}
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
           coverageCommand: make test-coverage
+          debug: true
