@@ -7,4 +7,4 @@
 
 <a href="https://codeclimate.com/github/lanakonst/frontend-project-46/maintainability"><img src="https://api.codeclimate.com/v1/badges/a2a21b98417a4fe20238/maintainability" /></a>
 
-[![asciicast](https://asciinema.org/a/kw5KVvU7sPOorXIdTGcDv0MXS.svg)](https://asciinema.org/a/kw5KVvU7sPOorXIdTGcDv0MXS)
+[![asciicast](https://asciinema.org/a/FqrRQyjwdrvPv9hdcQXotHBOJ.svg)](https://asciinema.org/a/FqrRQyjwdrvPv9hdcQXotHBOJ)
