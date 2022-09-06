@@ -3,6 +3,7 @@ import path from 'path';
 import process from 'process';
 import _ from 'lodash';
 import parse from './parsers.js';
+import formatter from './formatter.js';
 
 const getAbsolutePath = (filepath) => {
   const current = process.cwd();
@@ -18,25 +19,43 @@ const readFile = (filepath) => {
 
 const compareFiles = (data1, data2) => {
   const keys = _.sortBy(_.union(Object.keys(data1), Object.keys(data2)));
-  const res = keys.map((key) => {
+  const res = keys.reduce((acc, key) => {
     const value1 = data1[key];
     const value2 = data2[key];
+    let newKey;
     if (Object.hasOwn(data1, key)) {
       if (Object.hasOwn(data2, key)) {
-        if (_.isEqual(value1, value2)) return `    ${key}: ${value1}`;
-        return `  - ${key}: ${value1}\n  + ${key}: ${value2}`;
+        if (_.isObject(value1) && (_.isObject(value2))) {
+          acc[key] = compareFiles(value1, value2);
+          return acc;
+        }
+        if (_.isEqual(value1, value2)) {
+          acc[key] = value1;
+        } else {
+          newKey = `- ${key}`;
+          acc[newKey] = value1;
+          newKey = `+ ${key}`;
+          acc[newKey] = value2;
+        }
+      } else {
+        newKey = `- ${key}`;
+        acc[newKey] = value1;
       }
-      return `  - ${key}: ${value1}`;
+    } else {
+      newKey = `+ ${key}`;
+      acc[newKey] = value2;
     }
-    return `  + ${key}: ${value2}`;
-  });
-  return ['{', ...res, '}'];
+    return acc;
+  }, {});
+
+  return res;
 };
 
 const genDiff = (filepath1, filepath2) => {
   const content1 = readFile(getAbsolutePath(filepath1));
   const content2 = readFile(getAbsolutePath(filepath2));
-  return compareFiles(content1, content2).join('\n');
+  const res = compareFiles(content1, content2);
+  return formatter(res);
 };
 
 export default genDiff;
