@@ -51,11 +51,11 @@ const compareFiles = (data1, data2) => {
   return res;
 };
 
-const genDiff = (filepath1, filepath2) => {
+const genDiff = (filepath1, filepath2, format) => {
   const content1 = readFile(getAbsolutePath(filepath1));
   const content2 = readFile(getAbsolutePath(filepath2));
   const res = compareFiles(content1, content2);
-  return formatter(res);
+  return formatter(res, format);
 };
 
 export default genDiff;
