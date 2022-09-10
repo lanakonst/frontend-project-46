@@ -58,4 +58,4 @@ const genDiff = (filepath1, filepath2, format) => {
   return formatter(comparisionFile, format);
 };
 
-export default genDiff;
+export { genDiff };
