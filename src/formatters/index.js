@@ -7,7 +7,7 @@ const formatter = (data, style = 'stylish') => {
     case 'plain':
       return plain(data);
     case 'json':
-      return json(data)
+      return json(data);
     default:
       return `{\n${stylish(data)}\n}`;
   }
