@@ -3,7 +3,7 @@ import path from 'path';
 import process from 'process';
 import _ from 'lodash';
 import parse from './parsers.js';
-import formatter from './formatter.js';
+import formatter from './formatters/index.js';
 
 const getAbsolutePath = (filepath) => {
   const current = process.cwd();
@@ -32,9 +32,9 @@ const compareFiles = (data1, data2) => {
         if (_.isEqual(value1, value2)) {
           acc[key] = value1;
         } else {
-          newKey = `- ${key}`;
+          newKey = `+- ${key}`;
           acc[newKey] = value1;
-          newKey = `+ ${key}`;
+          newKey = `-+ ${key}`;
           acc[newKey] = value2;
         }
       } else {
@@ -54,8 +54,8 @@ const compareFiles = (data1, data2) => {
 const genDiff = (filepath1, filepath2, format) => {
   const content1 = readFile(getAbsolutePath(filepath1));
   const content2 = readFile(getAbsolutePath(filepath2));
-  const res = compareFiles(content1, content2);
-  return formatter(res, format);
+  const comparisionFile = compareFiles(content1, content2);
+  return formatter(comparisionFile, format);
 };
 
 export default genDiff;
