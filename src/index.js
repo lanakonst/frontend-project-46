@@ -22,7 +22,6 @@ const compareFiles = (data1, data2) => {
   const res = keys.reduce((acc, key) => {
     const value1 = data1[key];
     const value2 = data2[key];
-    let newKey;
     if (Object.hasOwn(data1, key)) {
       if (Object.hasOwn(data2, key)) {
         if (_.isObject(value1) && (_.isObject(value2))) {
@@ -32,18 +31,14 @@ const compareFiles = (data1, data2) => {
         if (_.isEqual(value1, value2)) {
           acc[key] = value1;
         } else {
-          newKey = `+- ${key}`;
-          acc[newKey] = value1;
-          newKey = `-+ ${key}`;
-          acc[newKey] = value2;
+          acc[`+- ${key}`] = value1;
+          acc[`-+ ${key}`] = value2;
         }
       } else {
-        newKey = `- ${key}`;
-        acc[newKey] = value1;
+        acc[`- ${key}`] = value1;
       }
     } else {
-      newKey = `+ ${key}`;
-      acc[newKey] = value2;
+      acc[`+ ${key}`] = value2;
     }
     return acc;
   }, {});
