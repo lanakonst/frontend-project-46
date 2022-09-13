@@ -20,15 +20,18 @@ const plain = (data) => {
     const { children } = obj;
 
     if (genDiffStatus === '') {
-      acc.push(`${plain(renameChildren(key, children))}`);
-    } else if (genDiffStatus === 'updated') {
+      return _.concat(acc, `${plain(renameChildren(key, children))}`);
+    }
+    if (genDiffStatus === 'updated') {
       const initValue = valueToLine(children[0]);
       const newValue = valueToLine(children[1]);
-      acc.push(`Property '${key}' was updated. From ${initValue} to ${newValue}`);
-    } else if (genDiffStatus === 'removed') {
-      acc.push(`Property '${key}' was removed`);
-    } else if (genDiffStatus === 'added') {
-      acc.push(`Property '${key}' was added with value: ${valueToLine(children)}`);
+      return _.concat(acc, `Property '${key}' was updated. From ${initValue} to ${newValue}`);
+    }
+    if (genDiffStatus === 'removed') {
+      return _.concat(acc, `Property '${key}' was removed`);
+    }
+    if (genDiffStatus === 'added') {
+      return _.concat(acc, `Property '${key}' was added with value: ${valueToLine(children)}`);
     }
     return acc;
   }, []);
