@@ -1,3 +1,5 @@
+This program compares two json or yaml files. Result can be printed in three formats: plain, stylish and json.
+
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/lanakonst/frontend-project-46/workflows/hexlet-check/badge.svg)](https://github.com/lanakonst/frontend-project-46/actions)
 
