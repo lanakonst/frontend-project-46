@@ -49,4 +49,3 @@ test('yaml files. JSON', () => {
   const testFilePath2 = getFixturePath('file2.test.yml');
   expect(genDiff(testFilePath1, testFilePath2, 'json')).toEqual(expectedResJSON);
 });
-
