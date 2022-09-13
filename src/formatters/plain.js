@@ -1,9 +1,8 @@
 import _ from 'lodash';
 
 const renameChildren = (parentKey, arrOfchildren) => arrOfchildren.map((child) => {
-  const renamed = child;
-  const { key } = renamed;
-  renamed.key = `${parentKey}.${key}`;
+  const { key, genDiffStatus, children } = child;
+  const renamed = { key: `${parentKey}.${key}`, genDiffStatus, children };
   return renamed;
 });
 
@@ -15,10 +14,7 @@ const valueToLine = (value) => {
 
 const plain = (data) => {
   const tree = data.reduce((acc, obj) => {
-    const { key } = obj;
-    const { genDiffStatus } = obj;
-    const { children } = obj;
-
+    const { key, genDiffStatus, children } = obj;
     if (genDiffStatus === '') {
       return _.concat(acc, `${plain(renameChildren(key, children))}`);
     }
