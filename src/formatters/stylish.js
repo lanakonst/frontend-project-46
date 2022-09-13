@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { getChildren, getGenDiffStatus, getKey } from '../index.js';
+// import { getChildren, getGenDiffStatus, getKey } from '../index.js';
 
 const interval = 4;
 
@@ -39,9 +39,9 @@ const makeLine = (sign, key, value, depth) => {
 
 const stylish = (data, depth = 1) => {
   const tree = data.reduce((acc, obj) => {
-    const key = getKey(obj);
-    const genDiffStatus = getGenDiffStatus(obj);
-    const children = getChildren(obj);
+    const { key } = obj;
+    const { genDiffStatus } = obj;
+    const { children } = obj;
     const sign = statusToSign(genDiffStatus);
     let line = '';
     const spacesBeforeBreckets = (' ').repeat(interval * depth);

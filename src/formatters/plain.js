@@ -1,9 +1,8 @@
 import _ from 'lodash';
-import { getChildren, getGenDiffStatus, getKey } from '../index.js';
 
 const renameChildren = (parentKey, arrOfchildren) => arrOfchildren.map((child) => {
   const renamed = child;
-  const key = getKey(renamed);
+  const { key } = renamed;
   renamed.key = `${parentKey}.${key}`;
   return renamed;
 });
@@ -16,9 +15,9 @@ const valueToLine = (value) => {
 
 const plain = (data) => {
   const tree = data.reduce((acc, obj) => {
-    const key = getKey(obj);
-    const genDiffStatus = getGenDiffStatus(obj);
-    const children = getChildren(obj);
+    const { key } = obj;
+    const { genDiffStatus } = obj;
+    const { children } = obj;
 
     if (genDiffStatus === '') {
       acc.push(`${plain(renameChildren(key, children))}`);
