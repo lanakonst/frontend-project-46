@@ -1,5 +1,4 @@
 import _ from 'lodash';
-// import { getChildren, getGenDiffStatus, getKey } from '../index.js';
 
 const interval = 4;
 
@@ -17,13 +16,12 @@ const statusToSign = (status) => {
 };
 
 const typeObject = (obj, depth) => {
-  const line = _.transform(obj, (acc, value, key) => {
+  const line = _.reduce(obj, (acc, value, key) => {
     const spaces = (' ').repeat(interval * depth);
     if (_.isObject(value)) {
-      acc.push(`${spaces}${key}: {\n${typeObject(value, depth + 1)}\n${spaces}}`);
-    } else {
-      acc.push(`${spaces}${key}: ${value}`);
+      return _.concat(acc, `${spaces}${key}: {\n${typeObject(value, depth + 1)}\n${spaces}}`);
     }
+    return _.concat(acc, `${spaces}${key}: ${value}`);
   }, []);
   return line.join('\n');
 };
@@ -39,26 +37,20 @@ const makeLine = (sign, key, value, depth) => {
 
 const stylish = (data, depth = 1) => {
   const tree = data.reduce((acc, obj) => {
-    const { key } = obj;
-    const { genDiffStatus } = obj;
-    const { children } = obj;
+    const { key, genDiffStatus, children } = obj;
     const sign = statusToSign(genDiffStatus);
-    let line = '';
     const spacesBeforeBreckets = (' ').repeat(interval * depth);
     const spaces = sign === '+ ' || sign === '- ' ? (' ').repeat(interval * depth - 2) : (' ').repeat(interval * depth);
 
     if (genDiffStatus === '') {
-      line = `${spaces}${sign}${key}: {\n${stylish(children, depth + 1)}\n${spacesBeforeBreckets}}`;
-    } else if (genDiffStatus === 'updated') {
+      return _.concat(acc, `${spaces}${sign}${key}: {\n${stylish(children, depth + 1)}\n${spacesBeforeBreckets}}`);
+    }
+    if (genDiffStatus === 'updated') {
       const initValue = children[0];
       const newValue = children[1];
-      line = `${makeLine('- ', key, initValue, depth)}\n${makeLine('+ ', key, newValue, depth)}`;
-    } else {
-      line = makeLine(sign, key, children, depth);
+      return _.concat(acc, `${makeLine('- ', key, initValue, depth)}\n${makeLine('+ ', key, newValue, depth)}`);
     }
-
-    acc.push(line);
-    return acc;
+    return _.concat(acc, makeLine(sign, key, children, depth));
   }, []);
   return tree.join('\n');
 };
