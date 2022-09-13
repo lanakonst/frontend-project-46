@@ -54,6 +54,6 @@ const genDiff = (filepath1, filepath2, format) => {
   return formatter(comparisionTree, format);
 };
 
-export {
-  genDiff, getChildren, getGenDiffStatus, getKey,
+export default genDiff;
+export { getChildren, getGenDiffStatus, getKey,
 };
