@@ -17,31 +17,32 @@ const readFile = (filepath) => {
   return parse(content, extension);
 };
 
-const compareFiles = (data1, data2) => {
+const getKey = (comparisionFile) => comparisionFile.key;
+const getChildren = (comparisionFile) => comparisionFile.children;
+const getGenDiffStatus = (comparisionFile) => comparisionFile.genDiffStatus;
+
+const createComparisionFile = (data1, data2) => {
   const keys = _.sortBy(_.union(Object.keys(data1), Object.keys(data2)));
   const res = keys.reduce((acc, key) => {
     const value1 = data1[key];
     const value2 = data2[key];
     if (Object.hasOwn(data1, key)) {
       if (Object.hasOwn(data2, key)) {
-        if (_.isObject(value1) && (_.isObject(value2))) {
-          acc[key] = compareFiles(value1, value2);
-          return acc;
-        }
         if (_.isEqual(value1, value2)) {
-          acc[key] = value1;
+          acc.push({ key, genDiffStatus: 'unchanged', children: value1 });
+        } else if (_.isObject(value1) && _.isObject(value2)) {
+          acc.push({ key, genDiffStatus: '', children: createComparisionFile(value1, value2) });
         } else {
-          acc[`+- ${key}`] = value1;
-          acc[`-+ ${key}`] = value2;
+          acc.push({ key, genDiffStatus: 'updated', children: [value1, value2] });
         }
       } else {
-        acc[`- ${key}`] = value1;
+        acc.push({ key, genDiffStatus: 'removed', children: value1 });
       }
     } else {
-      acc[`+ ${key}`] = value2;
+      acc.push({ key, genDiffStatus: 'added', children: value2 });
     }
     return acc;
-  }, {});
+  }, []);
 
   return res;
 };
@@ -49,8 +50,10 @@ const compareFiles = (data1, data2) => {
 const genDiff = (filepath1, filepath2, format) => {
   const content1 = readFile(getAbsolutePath(filepath1));
   const content2 = readFile(getAbsolutePath(filepath2));
-  const comparisionFile = compareFiles(content1, content2);
+  const comparisionFile = createComparisionFile(content1, content2);
   return formatter(comparisionFile, format);
 };
 
-export default genDiff;
+export {
+  genDiff, getChildren, getGenDiffStatus, getKey,
+};
