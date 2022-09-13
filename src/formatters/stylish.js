@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 const interval = 4;
 
+const makeSpaces = (sign, depth) => (sign === '+ ' || sign === '- ' ? (' ').repeat(interval * depth - 2) : (' ').repeat(interval * depth));
 const statusToSign = (status) => {
   switch (status) {
     case 'added':
@@ -28,7 +29,7 @@ const typeObject = (obj, depth) => {
 
 const makeLine = (sign, key, value, depth) => {
   const spacesBeforeBreckets = (' ').repeat(interval * depth);
-  const spaces = sign === '+ ' || sign === '- ' ? (' ').repeat(interval * depth - 2) : (' ').repeat(interval * depth);
+  const spaces = makeSpaces(sign, depth);
   if (_.isObject(value)) {
     return `${spaces}${sign}${key}: {\n${typeObject(value, depth + 1)}\n${spacesBeforeBreckets}}`;
   }
@@ -40,7 +41,7 @@ const stylish = (data, depth = 1) => {
     const { key, genDiffStatus, children } = obj;
     const sign = statusToSign(genDiffStatus);
     const spacesBeforeBreckets = (' ').repeat(interval * depth);
-    const spaces = sign === '+ ' || sign === '- ' ? (' ').repeat(interval * depth - 2) : (' ').repeat(interval * depth);
+    const spaces = makeSpaces(sign, depth);
 
     if (genDiffStatus === '') {
       return _.concat(acc, `${spaces}${sign}${key}: {\n${stylish(children, depth + 1)}\n${spacesBeforeBreckets}}`);
