@@ -17,11 +17,11 @@ const readFile = (filepath) => {
   return parse(content, extension);
 };
 
-const getKey = (comparisionFile) => comparisionFile.key;
-const getChildren = (comparisionFile) => comparisionFile.children;
-const getGenDiffStatus = (comparisionFile) => comparisionFile.genDiffStatus;
+const getKey = (comparisionTree) => comparisionTree.key;
+const getChildren = (comparisionTree) => comparisionTree.children;
+const getGenDiffStatus = (comparisionTree) => comparisionTree.genDiffStatus;
 
-const createComparisionFile = (data1, data2) => {
+const createComparisionTree = (data1, data2) => {
   const keys = _.sortBy(_.union(Object.keys(data1), Object.keys(data2)));
   const res = keys.reduce((acc, key) => {
     const value1 = data1[key];
@@ -31,7 +31,7 @@ const createComparisionFile = (data1, data2) => {
         if (_.isEqual(value1, value2)) {
           acc.push({ key, genDiffStatus: 'unchanged', children: value1 });
         } else if (_.isObject(value1) && _.isObject(value2)) {
-          acc.push({ key, genDiffStatus: '', children: createComparisionFile(value1, value2) });
+          acc.push({ key, genDiffStatus: '', children: createComparisionTree(value1, value2) });
         } else {
           acc.push({ key, genDiffStatus: 'updated', children: [value1, value2] });
         }
@@ -50,8 +50,8 @@ const createComparisionFile = (data1, data2) => {
 const genDiff = (filepath1, filepath2, format) => {
   const content1 = readFile(getAbsolutePath(filepath1));
   const content2 = readFile(getAbsolutePath(filepath2));
-  const comparisionFile = createComparisionFile(content1, content2);
-  return formatter(comparisionFile, format);
+  const comparisionTree = createComparisionTree(content1, content2);
+  return formatter(comparisionTree, format);
 };
 
 export {
