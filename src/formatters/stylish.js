@@ -3,18 +3,6 @@ import _ from 'lodash';
 const interval = 4;
 
 const makeSpaces = (sign, depth) => (sign === '+ ' || sign === '- ' ? (' ').repeat(interval * depth - 2) : (' ').repeat(interval * depth));
-const statusToSign = (status) => {
-  switch (status) {
-    case 'added':
-      return '+ ';
-    case 'removed':
-      return '- ';
-    case 'updated':
-      return '- ';
-    default:
-      return '';
-  }
-};
 
 const typeObject = (obj, depth) => {
   const line = _.reduce(obj, (acc, value, key) => {
@@ -38,20 +26,23 @@ const makeLine = (sign, key, value, depth) => {
 
 const stylish = (data, depth = 1) => {
   const tree = data.reduce((acc, obj) => {
-    const { key, genDiffStatus, children } = obj;
-    const sign = statusToSign(genDiffStatus);
+    const { key, status } = obj;
     const spacesBeforeBreckets = (' ').repeat(interval * depth);
-    const spaces = makeSpaces(sign, depth);
-
-    if (genDiffStatus === '') {
+    if (status === 'nested') {
+      const sign = '';
+      const spaces = makeSpaces(sign, depth);
+      const { children } = obj;
       return _.concat(acc, `${spaces}${sign}${key}: {\n${stylish(children, depth + 1)}\n${spacesBeforeBreckets}}`);
     }
-    if (genDiffStatus === 'updated') {
-      const initValue = children[0];
-      const newValue = children[1];
+    const { value } = obj;
+    if (status === 'updated') {
+      const initValue = value[0];
+      const newValue = value[1];
       return _.concat(acc, `${makeLine('- ', key, initValue, depth)}\n${makeLine('+ ', key, newValue, depth)}`);
     }
-    return _.concat(acc, makeLine(sign, key, children, depth));
+    if (status === 'removed') return _.concat(acc, makeLine('- ', key, value, depth));
+    if (status === 'added') return _.concat(acc, makeLine('+ ', key, value, depth));
+    return _.concat(acc, makeLine('', key, value, depth));
   }, []);
   return tree.join('\n');
 };

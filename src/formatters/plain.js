@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
 const renameChildren = (parentKey, arrOfchildren) => arrOfchildren.map((child) => {
-  const { key, genDiffStatus, children } = child;
-  const renamed = { key: `${parentKey}.${key}`, genDiffStatus, children };
-  return renamed;
+  const { key, status } = child;
+  if (status === 'nested') return { key: `${parentKey}.${key}`, status, children: child.children };
+  return { key: `${parentKey}.${key}`, status, value: child.value };
 });
 
 const valueToLine = (value) => {
@@ -14,20 +14,21 @@ const valueToLine = (value) => {
 
 const plain = (data) => {
   const tree = data.reduce((acc, obj) => {
-    const { key, genDiffStatus, children } = obj;
-    if (genDiffStatus === '') {
-      return _.concat(acc, `${plain(renameChildren(key, children))}`);
+    const { key, status } = obj;
+    if (status === 'nested') {
+      return _.concat(acc, `${plain(renameChildren(key, obj.children))}`);
     }
-    if (genDiffStatus === 'updated') {
-      const initValue = valueToLine(children[0]);
-      const newValue = valueToLine(children[1]);
+    const { value } = obj;
+    if (status === 'updated') {
+      const initValue = valueToLine(value[0]);
+      const newValue = valueToLine(value[1]);
       return _.concat(acc, `Property '${key}' was updated. From ${initValue} to ${newValue}`);
     }
-    if (genDiffStatus === 'removed') {
+    if (status === 'removed') {
       return _.concat(acc, `Property '${key}' was removed`);
     }
-    if (genDiffStatus === 'added') {
-      return _.concat(acc, `Property '${key}' was added with value: ${valueToLine(children)}`);
+    if (status === 'added') {
+      return _.concat(acc, `Property '${key}' was added with value: ${valueToLine(value)}`);
     }
     return acc;
   }, []);
