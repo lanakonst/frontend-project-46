@@ -29,7 +29,6 @@ const stylish = (data, depth = 1) => {
     const { key, status } = obj;
     const spacesBeforeBreckets = (' ').repeat(interval * depth);
     if (status === 'nested') {
-      //const sign = '';
       const spaces = makeSpaces(depth);
       const { children } = obj;
       return _.concat(acc, `${spaces}  ${key}: {\n${stylish(children, depth + 1)}\n${spacesBeforeBreckets}}`);
