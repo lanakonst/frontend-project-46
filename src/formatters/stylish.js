@@ -25,24 +25,24 @@ const makeLine = (sign, key, value, depth) => {
 };
 
 const stylish = (data, depth = 1) => {
-  const tree = data.reduce((acc, obj) => {
+  const tree = data.flatMap((obj) => {
     const { key, status } = obj;
     const spacesBeforeBreckets = (' ').repeat(interval * depth);
     if (status === 'nested') {
       const spaces = makeSpaces(depth);
       const { children } = obj;
-      return _.concat(acc, `${spaces}  ${key}: {\n${stylish(children, depth + 1)}\n${spacesBeforeBreckets}}`);
+      return `${spaces}  ${key}: {\n${stylish(children, depth + 1)}\n${spacesBeforeBreckets}}`;
     }
     const { value } = obj;
     if (status === 'updated') {
       const initValue = value[0];
       const newValue = value[1];
-      return _.concat(acc, `${makeLine('- ', key, initValue, depth)}\n${makeLine('+ ', key, newValue, depth)}`);
+      return `${makeLine('- ', key, initValue, depth)}\n${makeLine('+ ', key, newValue, depth)}`;
     }
-    if (status === 'unchanged') return _.concat(acc, makeLine('  ', key, value, depth));
+    if (status === 'unchanged') return makeLine('  ', key, value, depth);
     const sign = status === 'removed' ? '- ' : '+ ';
-    return _.concat(acc, makeLine(sign, key, value, depth));
-  }, []);
+    return makeLine(sign, key, value, depth);
+  });
   return tree.join('\n');
 };
 

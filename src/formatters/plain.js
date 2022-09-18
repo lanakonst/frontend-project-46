@@ -13,26 +13,26 @@ const valueToLine = (value) => {
 };
 
 const plain = (data) => {
-  const tree = data.reduce((acc, obj) => {
+  const tree = data.flatMap((obj) => {
     const { key, status } = obj;
     if (status === 'nested') {
-      return _.concat(acc, `${plain(renameChildren(key, obj.children))}`);
+      return `${plain(renameChildren(key, obj.children))}`;
     }
     const { value } = obj;
     if (status === 'updated') {
       const initValue = valueToLine(value[0]);
       const newValue = valueToLine(value[1]);
-      return _.concat(acc, `Property '${key}' was updated. From ${initValue} to ${newValue}`);
+      return `Property '${key}' was updated. From ${initValue} to ${newValue}`;
     }
     if (status === 'removed') {
-      return _.concat(acc, `Property '${key}' was removed`);
+      return `Property '${key}' was removed`;
     }
     if (status === 'added') {
-      return _.concat(acc, `Property '${key}' was added with value: ${valueToLine(value)}`);
+      return `Property '${key}' was added with value: ${valueToLine(value)}`;
     }
-    return acc;
-  }, []);
-  return tree.join('\n');
+    return '';
+  });
+  return tree.filter((line) => line.length > 0).join('\n');
 };
 
 export default plain;
