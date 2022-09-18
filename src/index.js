@@ -13,8 +13,8 @@ const getAbsolutePath = (filepath) => {
 const readFile = (filepath) => {
   const absPath = getAbsolutePath(filepath);
   const content = fs.readFileSync(absPath, 'utf-8');
-  const extension = path.extname(filepath);
-  return parse(content, extension);
+  const type = path.extname(filepath).slice(1);
+  return parse(content, type);
 };
 
 const genDiff = (filepath1, filepath2, format) => {
