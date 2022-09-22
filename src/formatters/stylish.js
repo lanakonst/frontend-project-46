@@ -26,8 +26,10 @@ const stylish = (data, depth = 1) => {
     }
 
     if (status === 'updated') {
-      const initValue = _.isObject(obj.value[0]) ? `{\n${stringify(obj.value[0], depth + 1)}\n${spacesBeforeBreckets}}` : obj.value[0];
-      const newValue = _.isObject(obj.value[1]) ? `{\n${stringify(obj.value[1], depth + 1)}\n${spacesBeforeBreckets}}` : obj.value[1];
+      const [initValue, newValue] = obj.value.map((val) => {
+        if (_.isObject(val)) return `{\n${stringify(val, depth + 1)}\n${spacesBeforeBreckets}}`;
+        return val;
+      });
       return `${spaces}- ${key}: ${initValue}\n${spaces}+ ${key}: ${newValue}`;
     }
     const value = _.isObject(obj.value) ? `{\n${stringify(obj.value, depth + 1)}\n${spacesBeforeBreckets}}` : obj.value;
