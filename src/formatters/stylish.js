@@ -4,13 +4,13 @@ const interval = 4;
 
 const makeSpaces = (depth) => (' ').repeat(interval * depth - 2);
 
-const stringify = (obj, depth) => {
-  const line = _.reduce(obj, (acc, value, key) => {
+const stringify = (value, depth) => {
+  const line = _.reduce(value, (acc, val, key) => {
     const spaces = (' ').repeat(interval * depth);
-    if (_.isObject(value)) {
-      return _.concat(acc, `${spaces}${key}: {\n${stringify(value, depth + 1)}\n${spaces}}`);
+    if (_.isObject(val)) {
+      return _.concat(acc, `${spaces}${key}: {\n${stringify(val, depth + 1)}\n${spaces}}`);
     }
-    return _.concat(acc, `${spaces}${key}: ${value}`);
+    return _.concat(acc, `${spaces}${key}: ${val}`);
   }, []);
   return line.join('\n');
 };
