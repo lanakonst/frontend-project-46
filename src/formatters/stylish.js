@@ -8,10 +8,7 @@ const stringify = (value, depth) => {
   if (!_.isObject(value)) return String(value);
   const line = _.reduce(value, (acc, val, key) => {
     const innerSpaces = makeSpaces(depth + 1);
-    if (_.isObject(val)) {
-      return _.concat(acc, `${innerSpaces}${key}: ${stringify(val, depth + 1)}`);
-    }
-    return _.concat(acc, `${innerSpaces}${key}: ${val}`);
+    return _.concat(acc, `${innerSpaces}${key}: ${stringify(val, depth + 1)}`);
   }, []);
   const spaces = makeSpaces(depth);
   return `{\n${line.join('\n')}\n${spaces}}`;
